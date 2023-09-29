@@ -1,11 +1,9 @@
-import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import CustomPaginationActionsTable from "./components/tabla";
+import TransitionsModal from "./components/modal";
+
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-
   return (
     <>
       <div>
@@ -20,7 +18,8 @@ function App() {
           label="Filtrar por estado."
           variant="outlined"
         />
-        <Button variant="contained">Success</Button>
+        <TransitionsModal />
+      
         <CustomPaginationActionsTable />
       </div>
     </>

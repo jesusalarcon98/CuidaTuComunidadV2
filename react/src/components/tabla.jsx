@@ -15,7 +15,8 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import TableHead from "@mui/material/TableHead"; // Importa TableHead
+import TableHead from "@mui/material/TableHead";
+import { LikeButton, DeleteButton } from "./Accions";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -178,7 +179,10 @@ export default function CustomPaginationActionsTable() {
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.lugar}</TableCell>
               <TableCell>{row.autor}</TableCell>
-              <TableCell align="right">Acciones</TableCell>{" "}
+              <TableCell align="right">
+                {" "}
+                <LikeButton /> <DeleteButton />
+              </TableCell>{" "}
             </TableRow>
           ))}
           {emptyRows > 0 && (
