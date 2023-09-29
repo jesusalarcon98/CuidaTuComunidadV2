@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -11,6 +11,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Autocomplete from "@mui/material/Autocomplete";
+import "../styles/styles.css";
 
 const style = {
   position: "absolute",
@@ -24,14 +25,14 @@ const style = {
   p: 4,
 };
 
-export default function TransitionsModal() {
-  const [open, setOpen] = React.useState(false);
+export default function CreateForm() {
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
-    <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+    <>
+      <Button onClick={handleOpen}>Crear nueva tarea.</Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -47,9 +48,8 @@ export default function TransitionsModal() {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Formulario para crear una nueva tarea
-            </Typography>
+            <h1 className="title"> Formulario para crear una nueva tarea</h1>
+
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <TextField
                 id="outlined-basic"
@@ -92,7 +92,7 @@ export default function TransitionsModal() {
           </Box>
         </Fade>
       </Modal>
-    </div>
+    </>
   );
 }
 

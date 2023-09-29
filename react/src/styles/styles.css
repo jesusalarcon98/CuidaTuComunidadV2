@@ -1,0 +1,32 @@
+.principal {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  gap: 10px;
+}
+
+.button {
+  display: grid;
+  width: 100%;
+  margin: 0 5px !important;
+  height: 100%;
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.title {
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.button:last-child {
+  grid-column: 5;
+}
