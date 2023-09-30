@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -49,46 +48,52 @@ export default function CreateForm() {
         <Fade in={open}>
           <Box sx={style}>
             <h1 className="title"> Formulario para crear una nueva tarea</h1>
-
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+            <div className="modal">
               <TextField
                 id="outlined-basic"
-                label="Outlined"
+                label="Inserte una tarea."
                 variant="outlined"
+                className="button"
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker label="Basic date picker" />
-                </DemoContainer>
+                <div style={{ marginTop: "-8px" }}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker label="Ingrese la fecha." className="button" />
+                  </DemoContainer>
+                </div>
               </LocalizationProvider>
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <TextField
-                id="outlined-multiline-static"
-                label="Multiline"
-                multiline
-                rows={4}
-                defaultValue="Default Value"
-              />
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+            </div>
+            <TextField
+              id="outlined-multiline-static"
+              label="Describa con más detalle la tarea."
+              multiline
+              rows={4}
+              className="button"
+              style={{ marginTop: "8px" }}
+            />
+            <div className="modal">
               <Autocomplete
+                className="button"
+                style={{ marginTop: "15px" }}
                 disablePortal
                 id="combo-box-demo"
                 options={top100Films}
-                sx={{ width: 300 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Movie" />
+                  <TextField {...params} label="ingrese su estado." />
                 )}
               />
-              <TextField
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
-            </Typography>
-
-            <Button variant="contained">Crear</Button>
+              <div>
+                <TextField
+                  id="outlined-basic"
+                  label="Ingrese su nombre."
+                  variant="outlined"
+                  className="button"
+                />
+              </div>
+            </div>
+            <div className="title">
+              <Button variant="contained">Crear</Button>
+            </div>
           </Box>
         </Fade>
       </Modal>

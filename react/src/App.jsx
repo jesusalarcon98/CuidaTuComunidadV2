@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import CustomPaginationActionsTable from "./components/table";
 import CreateForm from "./components/CreateForm";
-import "./styles/styles.css"; // Importa tu archivo CSS personalizado
+import "./styles/styles.css"; 
 
 function App() {
   return (
