@@ -14,10 +14,11 @@ class Task extends Model
         'description',
         'author',
         'date',
-        'state',
-        /*   
-        
-        
-        'likes', */
+        'state_id',
+
     ];
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id'); // Establecer la relación de clave foránea
+    }
 }

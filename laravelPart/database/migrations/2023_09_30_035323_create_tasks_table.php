@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string("title");
             $table->text("description");
             $table->date("date");
-            $table->string("state");
+            $table->unsignedBigInteger('state_id'); // Campo de clave foránea
             $table->string("author");
             $table->integer("likes")->default(0);
 
             $table->timestamps();
+            $table->foreign('state_id')->references('id')->on('states');
         });
     }
 

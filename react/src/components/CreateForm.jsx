@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../styles/styles.css";
 import axios from "axios";
+import CreateAction from "./CreateAction";
 
 const style = {
   position: "absolute",
@@ -29,17 +30,29 @@ export default function CreateForm() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [selectedState, setSelectedState] = useState(null);
+  const [selectedState, setSelectedState] = useState([]);
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     date: null,
-    state: "",
+    state_id: null,
     author: "",
   });
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/")
+      .then((response) => {
+        console.log("Respuesta GET:", response.data);
+        setSelectedState(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const handleCreateTask = () => {
-    console.log("datos", formData);
     // Realiza una solicitud POST al backend para crear la tarea
     axios
       .post("http://localhost:8000/api/", formData)
@@ -117,14 +130,20 @@ export default function CreateForm() {
                 style={{ marginTop: "15px" }}
                 disablePortal
                 id="combo-box-demo"
-                options={top100Films}
-                value={selectedState}
+                options={selectedState.map((state) => state.name)}
                 onChange={(event, newValue) => {
-                  setSelectedState(newValue); // Actualiza el estado seleccionado
                   if (newValue) {
-                    setFormData({ ...formData, state: newValue.label }); // Actualiza formData.state con el valor de label
+                    const selectedStateObject = selectedState.find(
+                      (state) => state.name === newValue
+                    );
+                    if (selectedStateObject) {
+                      setFormData({
+                        ...formData,
+                        state_id: selectedStateObject.id,
+                      });
+                    }
                   } else {
-                    setFormData({ ...formData, state: "" }); // Si el usuario deselecciona, borra formData.state
+                    setFormData({ ...formData, state: "" });
                   }
                 }}
                 renderInput={(params) => (
@@ -145,9 +164,7 @@ export default function CreateForm() {
               </div>
             </div>
             <div className="title">
-              <Button onClick={handleCreateTask} variant="contained">
-                Crear
-              </Button>
+              <CreateAction handleCreateTask={handleCreateTask} />
             </div>
           </Box>
         </Fade>
@@ -155,9 +172,3 @@ export default function CreateForm() {
     </>
   );
 }
-
-const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-];

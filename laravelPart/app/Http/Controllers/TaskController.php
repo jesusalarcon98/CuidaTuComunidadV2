@@ -18,11 +18,8 @@ class TaskController extends Controller
                 'description' => 'required|string',
                 'author' => 'required|string|max:255',
                 'date' => 'required|date',
-                'state' => 'required|string|max:255',
-                /*  
-                
-               
- */
+                'state_id' => 'required|exists:states,id',
+
             ]);
             // Validar los datos del formulario aquí si es necesario.
             $task = new Task();
@@ -30,7 +27,7 @@ class TaskController extends Controller
             $task->description = $validatedData['description'];
             $task->author = $validatedData['author'];
             $task->date = $validatedData['date'];
-            $task->state = $validatedData['state'];
+            $task->state_id = $validatedData['state_id'];
             /*  
             
             
