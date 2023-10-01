@@ -129,6 +129,7 @@ export default function CustomPaginationActionsTable() {
             <TableCell>Fecha de Creación</TableCell>
             <TableCell>Estado</TableCell>
             <TableCell>Creador</TableCell>
+            <TableCell>Likes</TableCell>
             <TableCell align="right">Acciones</TableCell>
           </TableRow>
         </TableHead>
@@ -145,9 +146,10 @@ export default function CustomPaginationActionsTable() {
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.state_name}</TableCell>
               <TableCell>{row.author}</TableCell>
+              <TableCell>{row.likes}</TableCell>
               <TableCell align="right">
                 {" "}
-                <LikeButton /> <DeleteButton />
+                <LikeButton taskId={row.id} /> <DeleteButton />
               </TableCell>{" "}
             </TableRow>
           ))}

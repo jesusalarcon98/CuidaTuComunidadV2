@@ -43,4 +43,22 @@ class TaskController extends Controller
 
         return response()->json($tasks);
     }
+    public function updateLikes($id)
+    {
+        try {
+            $task = Task::find($id);
+
+            if (!$task) {
+                return response()->json(['error' => 'Tarea no encontrada'], 404);
+            }
+
+            $task->likes += 1;
+            $task->save();
+
+            return response()->json(['message' => 'Like agregado con éxito', 'data' => $task]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Ha ocurrido un error al dar like'], 500);
+        }
+    }
 }

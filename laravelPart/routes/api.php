@@ -9,5 +9,6 @@ use App\Http\Controllers\StateController;
 
 Route::post('/', [TaskController::class, 'create']);
 Route::get('/', [StateController::class, 'getStates']);
+Route::put('/{id}', [TaskController::class, 'updateLikes']);
 
 Route::get('/{criteria}', [TaskController::class, 'getTasks']);
