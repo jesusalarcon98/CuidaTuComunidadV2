@@ -17,8 +17,4 @@ class Task extends Model
         'state_id',
 
     ];
-    public function state()
-    {
-        return $this->belongsTo(State::class, 'state_id'); // Establecer la relación de clave foránea
-    }
 }

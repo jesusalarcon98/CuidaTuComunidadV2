@@ -8,5 +8,6 @@ use App\Http\Controllers\StateController;
 
 
 Route::post('/', [TaskController::class, 'create']);
-Route::get('/{criteria}', [TaskController::class, 'getTasks']);
 Route::get('/', [StateController::class, 'getStates']);
+
+Route::get('/{criteria}', [TaskController::class, 'getTasks']);

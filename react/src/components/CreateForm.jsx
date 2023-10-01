@@ -41,25 +41,24 @@ export default function CreateForm() {
   });
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/")
-      .then((response) => {
-        console.log("Respuesta GET:", response.data);
-        setSelectedState(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+    if (open) {
+      axios
+        .get("http://localhost:8000/api/")
+        .then((response) => {
+          setSelectedState(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [open]);
 
   const handleCreateTask = () => {
-    // Realiza una solicitud POST al backend para crear la tarea
     axios
       .post("http://localhost:8000/api/", formData)
       .then((response) => {
-        // Maneja la respuesta del servidor si es necesario
         console.log("datooos", response.data);
-        // Cierra el modal o realiza otras acciones según tus necesidades
+
         handleClose();
       })
       .catch((error) => {
