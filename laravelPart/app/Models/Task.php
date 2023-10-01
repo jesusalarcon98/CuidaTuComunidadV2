@@ -7,5 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    use HasFactory;
+    protected $table = 'tasks'; // Nombre de la tabla en la base de datos
+
+    protected $fillable = [
+        'title',
+        'description',
+        'author',
+        'date',
+        'state',
+        /*   
+        
+        
+        'likes', */
+    ];
 }

@@ -11,6 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../styles/styles.css";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -28,6 +29,31 @@ export default function CreateForm() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [selectedState, setSelectedState] = useState(null);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    date: null,
+    state: "",
+    author: "",
+  });
+  const handleCreateTask = () => {
+    console.log("datos", formData);
+    // Realiza una solicitud POST al backend para crear la tarea
+    axios
+      .post("http://localhost:8000/api/", formData)
+      .then((response) => {
+        // Maneja la respuesta del servidor si es necesario
+        console.log("datooos", response.data);
+        // Cierra el modal o realiza otras acciones según tus necesidades
+        handleClose();
+      })
+      .catch((error) => {
+        // Maneja errores si es necesario
+        console.error(error);
+      });
+  };
 
   return (
     <>
@@ -50,26 +76,40 @@ export default function CreateForm() {
             <h1 className="title"> Formulario para crear una nueva tarea</h1>
             <div className="modal">
               <TextField
-                id="outlined-basic"
+                id="title"
                 label="Inserte una tarea."
                 variant="outlined"
                 className="button"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div style={{ marginTop: "-8px" }}>
                   <DemoContainer components={["DatePicker"]}>
-                    <DatePicker label="Ingrese la fecha." className="button" />
+                    <DatePicker
+                      id="date"
+                      label="Ingrese la fecha."
+                      className="button"
+                      value={formData.date}
+                      onChange={(date) => setFormData({ ...formData, date })}
+                    />
                   </DemoContainer>
                 </div>
               </LocalizationProvider>
             </div>
             <TextField
-              id="outlined-multiline-static"
+              id="description"
               label="Describa con más detalle la tarea."
               multiline
               rows={4}
               className="button"
               style={{ marginTop: "8px" }}
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
             />
             <div className="modal">
               <Autocomplete
@@ -78,13 +118,26 @@ export default function CreateForm() {
                 disablePortal
                 id="combo-box-demo"
                 options={top100Films}
+                value={selectedState}
+                onChange={(event, newValue) => {
+                  setSelectedState(newValue); // Actualiza el estado seleccionado
+                  if (newValue) {
+                    setFormData({ ...formData, state: newValue.label }); // Actualiza formData.state con el valor de label
+                  } else {
+                    setFormData({ ...formData, state: "" }); // Si el usuario deselecciona, borra formData.state
+                  }
+                }}
                 renderInput={(params) => (
-                  <TextField {...params} label="ingrese su estado." />
+                  <TextField {...params} label="Ingrese su estado." />
                 )}
               />
               <div>
                 <TextField
-                  id="outlined-basic"
+                  id="author"
+                  value={formData.author}
+                  onChange={(e) =>
+                    setFormData({ ...formData, author: e.target.value })
+                  }
                   label="Ingrese su nombre."
                   variant="outlined"
                   className="button"
@@ -92,7 +145,9 @@ export default function CreateForm() {
               </div>
             </div>
             <div className="title">
-              <Button variant="contained">Crear</Button>
+              <Button onClick={handleCreateTask} variant="contained">
+                Crear
+              </Button>
             </div>
           </Box>
         </Fade>
