@@ -149,7 +149,11 @@ export default function CustomPaginationActionsTable() {
               <TableCell>{row.likes}</TableCell>
               <TableCell align="right">
                 {" "}
-                <LikeButton taskId={row.id} /> <DeleteButton />
+                <LikeButton taskId={row.id} />
+                <DeleteButton
+                  taskId={row.id}
+                  setSelectedTasks={setSelectedTasks}
+                />
               </TableCell>{" "}
             </TableRow>
           ))}

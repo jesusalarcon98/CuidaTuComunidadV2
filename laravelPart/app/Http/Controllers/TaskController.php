@@ -61,4 +61,23 @@ class TaskController extends Controller
             return response()->json(['error' => 'Ha ocurrido un error al dar like'], 500);
         }
     }
+    public function deleteTask($taskId)
+    {
+        try {
+            // Busca la tarea por su ID
+            $task = Task::find($taskId);
+
+            if (!$task) {
+                return response()->json(['error' => 'La tarea no fue encontrada'], 404);
+            }
+
+            // Elimina la tarea
+            $task->delete();
+
+            return response()->json(['message' => 'Tarea eliminada con éxito']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Ha ocurrido un error al eliminar la tarea'], 500);
+        }
+    }
 }

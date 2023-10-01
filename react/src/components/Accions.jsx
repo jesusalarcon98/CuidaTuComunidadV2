@@ -11,21 +11,18 @@ export function LikeButton(taskId) {
 
   const handleLikeClick = () => {
     const taskID = taskId.taskId;
-
     if (!liked) {
-      // Realiza la solicitud PUT cuando se da clic en "Like"
       axios
         .put(`http://localhost:8000/api/${taskID}/`)
         .then((response) => {
           console.log(response);
-          // Actualiza el estado local si la solicitud es exitosa
+
           setLiked(true);
         })
         .catch((error) => {
           console.error(error);
         });
     }
-    /*  setLiked(!liked); */
   };
 
   return (
@@ -36,9 +33,22 @@ export function LikeButton(taskId) {
   );
 }
 
-export function DeleteButton() {
+export function DeleteButton(taskId) {
+  const deleteTask = () => {
+    const taskID = taskId.taskId;
+    axios
+      .delete(`http://localhost:8000/api/${taskID}`)
+      .then((response) => {
+        console.log("Tarea eliminada con éxito", response);
+        // Llamar a la función onDelete para actualizar la lista de tareas
+      })
+      .catch((error) => {
+        console.error("Error al eliminar la tarea", error);
+      });
+  };
+
   return (
-    <IconButton color="warning" aria-label="Eliminar">
+    <IconButton color="warning" aria-label="Eliminar" onClick={deleteTask}>
       <DeleteIcon />
     </IconButton>
   );
