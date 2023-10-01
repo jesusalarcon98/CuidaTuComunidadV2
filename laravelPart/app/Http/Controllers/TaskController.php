@@ -42,4 +42,12 @@ class TaskController extends Controller
             return response()->json(['error' => 'Ha ocurrido un error al crear la tarea'], 500);
         }
     }
+    public function getTasks($criteria = null)
+    {
+        $tasks = Task::select('tasks.*', 'states.name as state_name')
+            ->join('states', 'tasks.state_id', '=', 'states.id')
+            ->get();
+
+        return response()->json($tasks);
+    }
 }

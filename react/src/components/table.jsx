@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -17,6 +18,7 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import TableHead from "@mui/material/TableHead";
 import { LikeButton, DeleteButton } from "./Accions";
+import axios from "axios";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -87,62 +89,26 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, descripcion, date, lugar, autor, acciones) {
-  return { name, descripcion, date, lugar, autor, acciones };
-}
-
-const rows = [
-  createData(
-    "Ayudar adultos mayores",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-  createData(
-    "Ayudar adultos menores",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-  createData(
-    "Ayudar adultos 3",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-  createData(
-    "Ayudar adultos 4",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-  createData(
-    "Ayudar adultos 5",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-  createData(
-    "Ayudar adultos 6",
-    "Se busca ayudar a los adultos mayores",
-    "10:30",
-    "Aguascalientes",
-    "Jesús Alarcón"
-  ),
-];
-
 export default function CustomPaginationActionsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [tasks, setSelectedTasks] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/api/criteria`)
+      .then((response) => {
+        console.log("Respuesta del table", response.data);
+        setSelectedTasks(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tasks.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -168,17 +134,17 @@ export default function CustomPaginationActionsTable() {
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
+            ? tasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : tasks
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.id}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {row.title}
               </TableCell>
-              <TableCell>{row.descripcion}</TableCell>
+              <TableCell>{row.description}</TableCell>
               <TableCell>{row.date}</TableCell>
-              <TableCell>{row.lugar}</TableCell>
-              <TableCell>{row.autor}</TableCell>
+              <TableCell>{row.state_name}</TableCell>
+              <TableCell>{row.author}</TableCell>
               <TableCell align="right">
                 {" "}
                 <LikeButton /> <DeleteButton />
@@ -196,7 +162,7 @@ export default function CustomPaginationActionsTable() {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
               colSpan={3}
-              count={rows.length}
+              count={tasks.length}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
