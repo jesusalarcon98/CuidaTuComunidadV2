@@ -183,7 +183,11 @@ export default function CustomPaginationActionsTable({
                   likes={row.likes}
                   updateTaskLikes={updateTaskLikes}
                 />
-                <DeleteButton taskId={row.id} deleteTask={deleteTask} />
+                <DeleteButton
+                  taskId={row.id}
+                  deleteTask={deleteTask}
+                  likes={row.likes}
+                />
               </TableCell>{" "}
             </TableRow>
           ))}

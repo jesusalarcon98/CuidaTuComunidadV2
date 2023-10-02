@@ -13,6 +13,11 @@ import Autocomplete from "@mui/material/Autocomplete";
 import "../styles/styles.css";
 import axios from "axios";
 import CreateAction from "./CreateAction";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const style = {
   position: "absolute",
@@ -28,8 +33,14 @@ const style = {
 
 export default function CreateForm() {
   const [open, setOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // Nuevo estado para el diálogo de éxito
+
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setSuccessDialogOpen(false); // Asegúrate de cerrar también el diálogo de éxito al cerrar el formulario.
+  };
+
   const [selectedState, setSelectedState] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -60,6 +71,7 @@ export default function CreateForm() {
         console.log("datooos", response.data);
 
         handleClose();
+        setSuccessDialogOpen(true); // Abre el diálogo de éxito cuando la tarea se crea con éxito.
       })
       .catch((error) => {
         // Maneja errores si es necesario
@@ -168,6 +180,24 @@ export default function CreateForm() {
           </Box>
         </Fade>
       </Modal>
+
+      {/* Diálogo de éxito */}
+      <Dialog
+        open={successDialogOpen}
+        onClose={() => setSuccessDialogOpen(false)}
+      >
+        <DialogTitle>Tarea Creada con Éxito</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            La tarea se ha creado correctamente.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
