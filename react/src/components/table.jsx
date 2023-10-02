@@ -89,7 +89,10 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function CustomPaginationActionsTable() {
+export default function CustomPaginationActionsTable({
+  nameFilter,
+  stateFilter,
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [tasks, setSelectedTasks] = useState([]);
@@ -118,6 +121,29 @@ export default function CustomPaginationActionsTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const updateTaskLikes = (taskId, newLikes) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, likes: newLikes } : task
+    );
+    setSelectedTasks(updatedTasks);
+  };
+
+  const deleteTask = (taskId) => {
+    const deletedTasks = tasks.filter((task) => task.id !== taskId);
+    setSelectedTasks(deletedTasks);
+  };
+
+  const filteredTasks = tasks.filter((row) => {
+    // Realiza la filtración según el nombre
+    const nameMatch = row.author
+      .toLowerCase()
+      .includes(nameFilter.toLowerCase());
+
+    const stateMatch =
+      !stateFilter || row.state_name.toLowerCase().includes(stateFilter);
+
+    return nameMatch && stateMatch;
+  });
 
   return (
     <TableContainer component={Paper}>
@@ -135,8 +161,11 @@ export default function CustomPaginationActionsTable() {
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? tasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : tasks
+            ? filteredTasks.slice(
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+              )
+            : filteredTasks
           ).map((row) => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row">
@@ -149,11 +178,12 @@ export default function CustomPaginationActionsTable() {
               <TableCell>{row.likes}</TableCell>
               <TableCell align="right">
                 {" "}
-                <LikeButton taskId={row.id} />
-                <DeleteButton
+                <LikeButton
                   taskId={row.id}
-                  setSelectedTasks={setSelectedTasks}
+                  likes={row.likes}
+                  updateTaskLikes={updateTaskLikes}
                 />
+                <DeleteButton taskId={row.id} deleteTask={deleteTask} />
               </TableCell>{" "}
             </TableRow>
           ))}

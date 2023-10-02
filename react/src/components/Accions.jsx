@@ -6,18 +6,19 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 
-export function LikeButton(taskId) {
+export function LikeButton({ taskId, likes, updateTaskLikes }) {
   const [liked, setLiked] = useState(false);
 
   const handleLikeClick = () => {
-    const taskID = taskId.taskId;
+    const taskID = taskId;
     if (!liked) {
       axios
         .put(`http://localhost:8000/api/${taskID}/`)
         .then((response) => {
           console.log(response);
-
           setLiked(true);
+
+          updateTaskLikes(taskID, likes + 1);
         })
         .catch((error) => {
           console.error(error);
@@ -32,15 +33,14 @@ export function LikeButton(taskId) {
     </Button>
   );
 }
-
-export function DeleteButton(taskId) {
-  const deleteTask = () => {
-    const taskID = taskId.taskId;
+export function DeleteButton({ taskId, deleteTask }) {
+  const handleDeleteTask = () => {
+    const taskID = taskId;
     axios
       .delete(`http://localhost:8000/api/${taskID}`)
       .then((response) => {
         console.log("Tarea eliminada con éxito", response);
-        // Llamar a la función onDelete para actualizar la lista de tareas
+        deleteTask(taskID);
       })
       .catch((error) => {
         console.error("Error al eliminar la tarea", error);
@@ -48,7 +48,11 @@ export function DeleteButton(taskId) {
   };
 
   return (
-    <IconButton color="warning" aria-label="Eliminar" onClick={deleteTask}>
+    <IconButton
+      color="warning"
+      aria-label="Eliminar"
+      onClick={handleDeleteTask}
+    >
       <DeleteIcon />
     </IconButton>
   );
