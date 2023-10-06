@@ -101,7 +101,6 @@ export default function CustomPaginationActionsTable({
     axios
       .get(`http://localhost:8000/api/criteria`)
       .then((response) => {
-        console.log("Respuesta del table", response.data);
         setSelectedTasks(response.data);
       })
       .catch((error) => {
