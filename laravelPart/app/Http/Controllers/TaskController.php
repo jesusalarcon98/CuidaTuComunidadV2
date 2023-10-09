@@ -28,8 +28,9 @@ class TaskController extends Controller
             $task->state_id = $validatedData['state_id'];
 
             $task->save();
+            $newTask = Task::find($task->id);
 
-            return response()->json(['message' => 'Tarea creada con éxito'], 201);
+            return response()->json(['message' => 'Tarea creada con éxito', 'task' => $newTask], 201);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Ha ocurrido un error al crear la tarea'], 500);

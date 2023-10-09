@@ -18,6 +18,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import dayjs from "dayjs";
 
 const style = {
   position: "absolute",
@@ -31,24 +32,51 @@ const style = {
   p: 4,
 };
 
-export default function CreateForm() {
+export default function CreateForm({ tasks, setSelectedTasks }) {
   const [open, setOpen] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false); // Nuevo estado para el diálogo de éxito
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    // Restablece el estado del formulario a sus valores iniciales
+    setFormData({
+      title: "",
+      description: "",
+      date: today,
+      state_id: null,
+      author: "",
+      state_name: "",
+    });
+    setFormErrors({
+      title: false,
+      description: false,
+      state_id: false,
+      author: false,
+      state_name: false,
+    });
+    setOpen(true);
+  };
   const handleClose = () => {
     setOpen(false);
-    setSuccessDialogOpen(false); // Asegúrate de cerrar también el diálogo de éxito al cerrar el formulario.
+    setSuccessDialogOpen(false);
   };
+  const today = dayjs();
 
   const [selectedState, setSelectedState] = useState([]);
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    date: null,
+    date: today,
     state_id: null,
     author: "",
+    state_name: "",
+  });
+  const [formErrors, setFormErrors] = useState({
+    title: false,
+    description: false,
+    state_id: false,
+    author: false,
+    state_name: false,
   });
 
   useEffect(() => {
@@ -65,20 +93,54 @@ export default function CreateForm() {
   }, [open]);
 
   const handleCreateTask = () => {
+    if (!formData.title) {
+      setFormErrors({ title: true });
+      setTimeout(() => {
+        setFormErrors({ title: false });
+      }, 3000);
+      return;
+    }
+    if (!formData.description) {
+      setFormErrors({ description: true });
+      setTimeout(() => {
+        setFormErrors({ description: false });
+      }, 3000);
+      return;
+    }
+    if (!formData.state_name) {
+      setFormErrors({ state_name: true });
+      setTimeout(() => {
+        setFormErrors({ state_name: false });
+      }, 3000);
+      return;
+    }
+    if (!formData.author) {
+      setFormErrors({ author: true });
+      setTimeout(() => {
+        setFormErrors({ author: false });
+      }, 3000);
+      return;
+    }
+
     axios
       .post("http://localhost:8000/api/", formData)
       .then((response) => {
-        console.log("datooos", response.data);
-
+        console.log("response", response);
+        const stateValue = formData.state_name;
+        const updatedTask = {
+          ...response.data.task,
+          state_name: stateValue,
+        };
+        setSelectedTasks([...tasks, updatedTask]);
         handleClose();
-        setSuccessDialogOpen(true); // Abre el diálogo de éxito cuando la tarea se crea con éxito.
+        setSuccessDialogOpen(true);
+
+        setFormErrors({ title: true });
       })
       .catch((error) => {
-        // Maneja errores si es necesario
-        console.error(error);
+        console.error("error", error);
       });
   };
-
   return (
     <>
       <Button onClick={handleOpen}>Crear nueva tarea.</Button>
@@ -108,16 +170,22 @@ export default function CreateForm() {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
+                required
+                error={formErrors.title}
+                helperText={formErrors.title ? "Este campo es requerido" : ""}
               />
+
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div style={{ marginTop: "-8px" }}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
+                      required
                       id="date"
                       label="Ingrese la fecha."
                       className="button"
                       value={formData.date}
                       onChange={(date) => setFormData({ ...formData, date })}
+                      defaultValue={today}
                     />
                   </DemoContainer>
                 </div>
@@ -134,6 +202,11 @@ export default function CreateForm() {
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
+              required
+              error={formErrors.description}
+              helperText={
+                formErrors.description ? "Este campo es requerido" : ""
+              }
             />
             <div className="modal">
               <Autocomplete
@@ -141,24 +214,33 @@ export default function CreateForm() {
                 style={{ marginTop: "15px" }}
                 disablePortal
                 id="combo-box-demo"
-                options={selectedState.map((state) => state.name)}
+                options={selectedState.map((state_name) => state_name.name)}
                 onChange={(event, newValue) => {
                   if (newValue) {
                     const selectedStateObject = selectedState.find(
-                      (state) => state.name === newValue
+                      (state_name) => state_name.name === newValue
                     );
                     if (selectedStateObject) {
                       setFormData({
                         ...formData,
                         state_id: selectedStateObject.id,
+                        state_name: selectedStateObject.name,
                       });
                     }
                   } else {
-                    setFormData({ ...formData, state: "" });
+                    setFormData({ ...formData, state_name: "" });
                   }
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Ingrese su estado." />
+                  <TextField
+                    {...params}
+                    label="Ingrese su estado."
+                    error={formErrors.state_name}
+                    helperText={
+                      formErrors.state_name ? "Este campo es requerido" : ""
+                    }
+                    required
+                  />
                 )}
               />
               <div>
@@ -171,6 +253,11 @@ export default function CreateForm() {
                   label="Ingrese su nombre."
                   variant="outlined"
                   className="button"
+                  error={formErrors.author}
+                  helperText={
+                    formErrors.author ? "Este campo es requerido" : ""
+                  }
+                  required
                 />
               </div>
             </div>

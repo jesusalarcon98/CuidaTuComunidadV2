@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import CustomPaginationActionsTable from "./components/table";
 import CreateForm from "./components/CreateForm";
 import "./styles/styles.css";
+import axios from "axios";
 
 function App() {
   const [nameFilter, setNameFilter] = useState("");
   const [stateFilter, setStateFilter] = useState("");
+  const [tasks, setSelectedTasks] = useState([]);
 
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value);
@@ -14,6 +16,18 @@ function App() {
   const handleStateFilterChange = (event) => {
     setStateFilter(event.target.value);
   };
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/api/criteria`)
+      .then((response) => {
+        setSelectedTasks(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div>
       <h1 className="title"> Cuida tu comunidad</h1>
@@ -33,12 +47,18 @@ function App() {
           onChange={handleStateFilterChange}
         />
         <div className="button">
-          <CreateForm className="button" />
+          <CreateForm
+            className="button"
+            tasks={tasks}
+            setSelectedTasks={setSelectedTasks}
+          />
         </div>
       </div>
       <CustomPaginationActionsTable
         nameFilter={nameFilter}
         stateFilter={stateFilter}
+        tasks={tasks}
+        setSelectedTasks={setSelectedTasks}
       />
     </div>
   );

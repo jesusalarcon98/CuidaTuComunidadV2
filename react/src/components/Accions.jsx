@@ -65,7 +65,6 @@ export function LikeButton({ taskId, likes, updateTaskLikes }) {
 }
 
 export function DeleteButton({ taskId, deleteTask, likes }) {
-  console.log("likes son", likes);
   const [open, setOpen] = useState(false);
   const [cannotDeleteDialogOpen, setCannotDeleteDialogOpen] = useState(false);
 

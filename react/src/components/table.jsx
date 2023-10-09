@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -18,7 +17,7 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import TableHead from "@mui/material/TableHead";
 import { LikeButton, DeleteButton } from "./Accions";
-import axios from "axios";
+import dayjs from "dayjs";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -92,21 +91,12 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable({
   nameFilter,
   stateFilter,
+  tasks,
+  setSelectedTasks,
 }) {
+  console.log(tasks);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [tasks, setSelectedTasks] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8000/api/criteria`)
-      .then((response) => {
-        setSelectedTasks(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -171,7 +161,7 @@ export default function CustomPaginationActionsTable({
                 {row.title}
               </TableCell>
               <TableCell>{row.description}</TableCell>
-              <TableCell>{row.date}</TableCell>
+              <TableCell>{dayjs(row.date).format("DD/MM/YYYY")}</TableCell>
               <TableCell>{row.state_name}</TableCell>
               <TableCell>{row.author}</TableCell>
               <TableCell>{row.likes}</TableCell>
